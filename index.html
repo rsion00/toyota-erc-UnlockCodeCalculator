@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERC Unlock Code Calculator</title>
+    <style>
+        /* === CSS変数（ライトモードとダークモードの色定義） === */
+        :root {
+            --bg-color: #f4f7f6;
+            --container-bg: #ffffff;
+            --text-main: #333333;
+            --text-heading: #2c3e50;
+            --text-sub: #7f8c8d;
+            --input-bg: #ffffff;
+            --input-border: #e0e0e0;
+            --input-text: #333333;
+            --result-bg: #f8f9fa;
+            --result-text: #333333;
+            --success-bg: #e8f8f5;
+            --success-text: #27ae60;
+            --error-bg: #fdf2f0;
+            --error-text: #e74c3c;
+            --btn-primary: #3498db;
+            --btn-hover: #2980b9;
+        }
+
+        /* ダークモード時の色上書き */
+        body.dark-mode {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-heading: #ffffff;
+            --text-sub: #aaaaaa;
+            --input-bg: #2d2d2d;
+            --input-border: #444444;
+            --input-text: #ffffff;
+            --result-bg: #2a2a2a;
+            --result-text: #e0e0e0;
+            --success-bg: #0d3821;
+            --success-text: #4ade80;
+            --error-bg: #3d1515;
+            --error-text: #f87171;
+            --btn-primary: #2980b9;
+            --btn-hover: #3498db;
+        }
+
+        /* === 基本スタイル === */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            /* テーマ切り替え時のなめらかなアニメーション */
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .container {
+            position: relative; /* テーマボタンの配置基準 */
+            background: var(--container-bg);
+            padding: 40px 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* ダークモード時の影を少し強調 */
+        body.dark-mode .container {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        /* テーマ切り替えボタン */
+        .theme-toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: auto;
+            color: var(--text-main);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            opacity: 0.7;
+        }
+        .theme-toggle-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            background: none;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-heading);
+            transition: color 0.4s ease;
+        }
+
+        p {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: color 0.4s ease;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: var(--btn-primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        input[type="text"].error {
+            border-color: var(--error-text);
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        button.calc-btn {
+            background-color: var(--btn-primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            will-change: transform;
+        }
+        button.calc-btn:hover {
+            background-color: var(--btn-hover);
+        }
+        button.calc-btn:active {
+            transform: scale(0.97);
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--result-bg);
+            color: var(--result-text);
+            border-radius: 8px;
+            min-height: 28px;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            word-break: break-all;
+            
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.4s ease, color 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .result-box.show {
+            opacity: 1;
+            transform: translateY(0);
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+        .result-box.show-error {
+            opacity: 1;
+            transform: translateY(0);
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            font-size: 16px;
+            letter-spacing: normal;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- テーマ切り替えボタン -->
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="テーマ切り替え">🌙</button>
+
+    <h2>Unlock Code Calculator</h2>
+    <p>16桁のERCコードを入力してください</p>
+    
+    <input type="text" id="ercInput" maxlength="16" placeholder="例: 1A2B3C4D5E6F7A8B" autocomplete="off">
+    <button id="calcButton" class="calc-btn">解除コードを計算する</button>
+    
+    <div class="result-box" id="resultOutput"></div>
+</div>
+
+<script>
+    /* =========================================
+       テーマ（ダーク/ライト）管理ロジック
+    ========================================= */
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // テーマを適用する関数
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            themeToggleBtn.textContent = '☀️'; // ダーク時は太陽アイコン
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggleBtn.textContent = '🌙'; // ライト時は月アイコン
+        }
+    }
+
+    // 初期化処理
+    function initTheme() {
+        // 1. ユーザーが過去に選択した設定があるか確認
+        const savedTheme = localStorage.getItem('theme-preference');
+        
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        } else if (savedTheme === 'light') {
+            applyTheme(false);
+        } else {
+            // 2. 保存された設定がなければ、端末のシステム設定に従う
+            applyTheme(systemPrefersDark.matches);
+        }
+    }
+
+    // ボタンクリック時の切り替えと保存
+    themeToggleBtn.addEventListener('click', () => {
+        const isCurrentlyDark = document.body.classList.contains('dark-mode');
+        // 現在の状態を反転
+        applyTheme(!isCurrentlyDark);
+        // 設定をローカルストレージに保存（次回訪問時のため）
+        localStorage.setItem('theme-preference', !isCurrentlyDark ? 'dark' : 'light');
+    });
+
+    // アプリ使用中にシステムの設定が変更された場合、それに追従する
+    systemPrefersDark.addEventListener('change', (e) => {
+        // ユーザーが手動で設定を保存していない場合のみ追従
+        if (!localStorage.getItem('theme-preference')) {
+            applyTheme(e.matches);
+        }
+    });
+
+    // ページロード時にテーマを初期化
+    initTheme();
+
+
+    /* =========================================
+       計算ロジック・UI操作（前回と同様）
+    ========================================= */
+    const inputElement = document.getElementById('ercInput');
+    const buttonElement = document.getElementById('calcButton');
+    const outputElement = document.getElementById('resultOutput');
+
+    function calculateUnlockCode(ercCode) {
+        let num = parseInt(ercCode.substring(0, 8), 16);
+        let value = parseInt(ercCode.substring(8, 16), 16);
+
+        let reversedValue = 0;
+        for (let i = 0; i < 32; i++) {
+            reversedValue = (reversedValue << 1) | (value & 1);
+            value >>>= 1;
+        }
+        reversedValue >>>= 0;
+
+        let result = (num ^ reversedValue) >>> 0;
+        result = (result - 234949137) >>> 0;
+
+        return result.toString(16).toUpperCase().padStart(8, '0');
+    }
+
+    buttonElement.addEventListener('click', generateCode);
+    
+    inputElement.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') generateCode();
+    });
+
+    inputElement.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase();
+        this.classList.remove('error');
+        outputElement.classList.remove('show', 'show-error');
+    });
+
+    function generateCode() {
+        const ercCode = inputElement.value.trim();
+        
+        outputElement.classList.remove('show', 'show-error');
+        void outputElement.offsetWidth; 
+
+        if (ercCode.length !== 16) {
+            inputElement.classList.add('error');
+            outputElement.textContent = "16桁の英数字を入力してください";
+            outputElement.classList.add('show-error');
+            return;
+        }
+
+        const result = calculateUnlockCode(ercCode);
+        outputElement.textContent = result;
+        outputElement.classList.add('show');
+    }
+</script>
+
+</body>
+</html>
