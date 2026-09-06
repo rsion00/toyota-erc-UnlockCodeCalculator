@@ -55,12 +55,11 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            /* テーマ切り替え時のなめらかなアニメーション */
             transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         .container {
-            position: relative; /* テーマボタンの配置基準 */
+            position: relative;
             background: var(--container-bg);
             padding: 40px 40px 30px;
             border-radius: 12px;
@@ -71,12 +70,10 @@
             transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* ダークモード時の影を少し強調 */
         body.dark-mode .container {
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
-        /* テーマ切り替えボタン */
         .theme-toggle-btn {
             position: absolute;
             top: 15px;
@@ -176,15 +173,18 @@
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.4s ease, color 0.4s ease;
             pointer-events: none;
+            display: none;
         }
         
         .result-box.show {
+            display: block;
             opacity: 1;
             transform: translateY(0);
             background-color: var(--success-bg);
             color: var(--success-text);
         }
         .result-box.show-error {
+            display: block;
             opacity: 1;
             transform: translateY(0);
             background-color: var(--error-bg);
@@ -192,12 +192,231 @@
             font-size: 16px;
             letter-spacing: normal;
         }
+
+        /* === 使い方セクション === */
+        .usage-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--input-border);
+            text-align: left;
+        }
+        .usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .usage-title {
+            font-weight: bold;
+            color: var(--text-heading);
+            margin: 0;
+            font-size: 16px;
+        }
+        .usage-btn {
+            background: none;
+            border: none;
+            color: var(--btn-primary);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+        }
+        .usage-btn:hover {
+            color: var(--btn-hover);
+        }
+        .usage-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* === モーダルとタブのスタイル === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-container {
+            background: var(--container-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-container {
+            transform: translateY(0);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--input-border);
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-heading);
+            margin: 0;
+        }
+        .modal-close-icon {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text-sub);
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-tabs {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--input-border);
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .modal-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .modal-tab {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid transparent;
+            cursor: pointer;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--input-border);
+            transition: background 0.2s, color 0.2s;
+        }
+        .modal-tab.active {
+            background: var(--btn-primary);
+            color: white;
+            border-color: var(--btn-primary);
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+            text-align: left;
+        }
+
+        /* タブコンテンツの表示・非表示アニメーション */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .modal-list-num {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--btn-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        .modal-list-text {
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+        .modal-warning {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+        }
+        .modal-warning-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #d97706;
+            margin: 0 0 8px 0;
+        }
+        .modal-warning ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .modal-warning li {
+            font-size: 12px;
+            color: #b45309;
+            margin-bottom: 4px;
+        }
+        body.dark-mode .modal-warning-title { color: #fbbf24; }
+        body.dark-mode .modal-warning li { color: #fcd34d; }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--input-border);
+        }
+        .modal-close-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--btn-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .modal-close-btn:hover {
+            background: var(--btn-hover);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- テーマ切り替えボタン -->
     <button id="themeToggle" class="theme-toggle-btn" aria-label="テーマ切り替え">🌙</button>
 
     <h2>Unlock Code Calculator</h2>
@@ -207,64 +426,150 @@
     <button id="calcButton" class="calc-btn">解除コードを計算する</button>
     
     <div class="result-box" id="resultOutput"></div>
+
+    <div class="usage-section">
+        <div class="usage-header">
+            <h3 class="usage-title">使い方：</h3>
+            <button id="openModalBtn" class="usage-btn">機種を選んで確認する</button>
+        </div>
+        <p class="usage-desc">「機種を選んで確認する」をクリックすると、お使いのナビの機種に合わせた手順を確認できます。</p>
+    </div>
+</div>
+
+<!-- モーダルウィンドウ -->
+<div id="usageModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">使い方 — 機種を選択</h2>
+            <button id="closeModalIcon" class="modal-close-icon" aria-label="閉じる">✕</button>
+        </div>
+        
+        <!-- タブボタン部分（data-target属性で表示するIDを指定） -->
+        <div class="modal-tabs">
+            <button class="modal-tab active" data-target="tab-general">汎用（一般的な手順）</button>
+            <button class="modal-tab" data-target="tab-nhdt">NHDT / NHDN 系</button>
+            <button class="modal-tab" data-target="tab-nhzt">NHZT 系</button>
+            <button class="modal-tab" data-target="tab-nszt">NSZT / NSZN 系</button>
+        </div>
+        
+        <div class="modal-body">
+            <!-- 1. 汎用の手順 -->
+            <div id="tab-general" class="tab-content active">
+                <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 4px 0;">機種共通の汎用手順</p>
+                <p style="font-size: 14px; margin: 0 0 20px 0;">多くのトヨタ・レクサス純正ナビに対応した一般的な手順です。</p>
+                <ol class="modal-list">
+                    <li><span class="modal-list-num">1</span><span class="modal-list-text">車のエンジンをかけずにACCまたはIGをONにします</span></li>
+                    <li><span class="modal-list-num">2</span><span class="modal-list-text">ナビのメインボタン（MENUまたはMAPボタン）を長押ししながら、パーキングライト（スモールランプ）を3〜4回ON/OFFします</span></li>
+                    <li><span class="modal-list-num">3</span><span class="modal-list-text">サービスモード（診断モード）画面が表示されます</span></li>
+                    <li><span class="modal-list-num">4</span><span class="modal-list-text">「ERC」または「セキュリティ」メニューを選択します</span></li>
+                    <li><span class="modal-list-num">5</span><span class="modal-list-text">画面に表示される16桁のERCコードをこのサイトに入力して計算します</span></li>
+                    <li><span class="modal-list-num">6</span><span class="modal-list-text">計算されたロック解除コードをナビに入力します</span></li>
+                </ol>
+            </div>
+
+            <!-- 2. NHDT / NHDN 系の手順 -->
+            <div id="tab-nhdt" class="tab-content">
+                <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 4px 0;">対応機種：NHDT-W57、NHDT-W58、NHDN-W56G、NHDN-W57G、NHDN-W58G</p>
+                <p style="font-size: 14px; margin: 0 0 20px 0;">NHDT・NHDN系の旧型モデルに対応した手順です。</p>
+                <ol class="modal-list">
+                    <li><span class="modal-list-num">1</span><span class="modal-list-text">パーキングブレーキをかけます</span></li>
+                    <li><span class="modal-list-num">2</span><span class="modal-list-text">イグニッション（ACC）をONにしてナビを起動します</span></li>
+                    <li><span class="modal-list-num">3</span><span class="modal-list-text">ナビの「MENU」ボタン（または「MAP」ボタン）を長押しし続けます</span></li>
+                    <li><span class="modal-list-num">4</span><span class="modal-list-text">そのまま車のパーキングライト（スモールランプ）スイッチを3回ON/OFFします（各操作は1秒以内）</span></li>
+                    <li><span class="modal-list-num">5</span><span class="modal-list-text">「TEST MODE」または「ERC SERVICE MODE」画面が表示されます</span></li>
+                    <li><span class="modal-list-num">6</span><span class="modal-list-text">画面に表示される16桁のERCコードをこのサイトに入力して計算します</span></li>
+                    <li><span class="modal-list-num">7</span><span class="modal-list-text">計算されたロック解除コードをナビに入力します</span></li>
+                </ol>
+            </div>
+
+            <!-- 3. NHZT 系の手順（※必要に応じて手順内容を書き換えてください） -->
+            <div id="tab-nhzt" class="tab-content">
+                <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 4px 0;">NHZT 系の専用手順</p>
+                <p style="font-size: 14px; margin: 0 0 20px 0;">NHZT モデルでの操作手順です。</p>
+                <ol class="modal-list">
+                    <li><span class="modal-list-num">1</span><span class="modal-list-text">パーキングブレーキをかけます</span></li>
+                    <li><span class="modal-list-num">2</span><span class="modal-list-text">「INFO」または「MENU」ボタンを長押しします</span></li>
+                    <li><span class="modal-list-num">3</span><span class="modal-list-text">長押ししたまま、ヘッドライト（またはパーキングライト）を3回ON/OFFします</span></li>
+                    <li><span class="modal-list-num">4</span><span class="modal-list-text">サービスメニュー（診断メニュー）が表示されます</span></li>
+                    <li><span class="modal-list-num">5</span><span class="modal-list-text">「Security」または「ERC入力」を選択します</span></li>
+                    <li><span class="modal-list-num">6</span><span class="modal-list-text">画面に表示される16桁のERCコードをこのサイトに入力して計算します</span></li>
+                    <li><span class="modal-list-num">7</span><span class="modal-list-text">計算されたロック解除コードをナビに入力します</span></li>
+                </ol>
+            </div>
+
+            <!-- 4. NSZT / NSZN 系の手順（※必要に応じて手順内容を書き換えてください） -->
+            <div id="tab-nszt" class="tab-content">
+                <p style="font-size: 13px; color: var(--text-sub); margin: 0 0 4px 0;">対応機種：NSZT-W62G、NSZT-W64T、NSZT-W66T、NSZT-Y66T、NSZN-W64T、NSZN-W66T、NSZN-W68T、NSZN-Z66T</p>
+                <p style="font-size: 14px; margin: 0 0 20px 0;">NSZT・NSZN系の比較的新しいモデルに対応した手順です。タッチパネル操作でサービスモードに入ります。</p>
+                <ol class="modal-list">
+                    <li><span class="modal-list-num">1</span><span class="modal-list-text">イグニッション（ACC）をONにしてナビを起動します</span></li>
+                    <li><span class="modal-list-num">2</span><span class="modal-list-text">「MENU」ボタンを押してメインメニューを表示します</span></li>
+                    <li><span class="modal-list-num">3</span><span class="modal-list-text">画面の左上 → 右上 → 左下 → 右下 の順に4隅をタッチし、これを3回繰り返します（合計12回）</span></li>
+                    <li><span class="modal-list-num">4</span><span class="modal-list-text">サービスモード（診断モード）画面が表示されます</span></li>
+                    <li><span class="modal-list-num">5</span><span class="modal-list-text">「ERC入力」または「セキュリティ」を選択します</span></li>
+                    <li><span class="modal-list-num">6</span><span class="modal-list-text">画面に表示される16桁のERCコードをこのサイトに入力して計算します</span></li>
+                    <li><span class="modal-list-num">7</span><span class="modal-list-text">計算されたロック解除コードをナビに入力します</span></li>
+                </ol>
+            </div>
+
+            <div class="modal-warning">
+                <p class="modal-warning-title">注意事項</p>
+                <ul>
+                    <li>・機種によっては手順が異なる場合があります</li>
+                    <li>・サービスモードへの操作は自己責任で行ってください</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button id="closeModalBtn" class="modal-close-btn">閉じる</button>
+        </div>
+    </div>
 </div>
 
 <script>
     /* =========================================
-       テーマ（ダーク/ライト）管理ロジック
+       テーマ管理
     ========================================= */
     const themeToggleBtn = document.getElementById('themeToggle');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-    // テーマを適用する関数
     function applyTheme(isDark) {
         if (isDark) {
             document.body.classList.add('dark-mode');
-            themeToggleBtn.textContent = '☀️'; // ダーク時は太陽アイコン
+            themeToggleBtn.textContent = '☀️';
         } else {
             document.body.classList.remove('dark-mode');
-            themeToggleBtn.textContent = '🌙'; // ライト時は月アイコン
+            themeToggleBtn.textContent = '🌙';
         }
     }
 
-    // 初期化処理
     function initTheme() {
-        // 1. ユーザーが過去に選択した設定があるか確認
         const savedTheme = localStorage.getItem('theme-preference');
-        
         if (savedTheme === 'dark') {
             applyTheme(true);
         } else if (savedTheme === 'light') {
             applyTheme(false);
         } else {
-            // 2. 保存された設定がなければ、端末のシステム設定に従う
             applyTheme(systemPrefersDark.matches);
         }
     }
 
-    // ボタンクリック時の切り替えと保存
     themeToggleBtn.addEventListener('click', () => {
         const isCurrentlyDark = document.body.classList.contains('dark-mode');
-        // 現在の状態を反転
         applyTheme(!isCurrentlyDark);
-        // 設定をローカルストレージに保存（次回訪問時のため）
         localStorage.setItem('theme-preference', !isCurrentlyDark ? 'dark' : 'light');
     });
 
-    // アプリ使用中にシステムの設定が変更された場合、それに追従する
     systemPrefersDark.addEventListener('change', (e) => {
-        // ユーザーが手動で設定を保存していない場合のみ追従
         if (!localStorage.getItem('theme-preference')) {
             applyTheme(e.matches);
         }
     });
-
-    // ページロード時にテーマを初期化
     initTheme();
 
-
     /* =========================================
-       計算ロジック・UI操作（前回と同様）
+       計算ロジック
     ========================================= */
     const inputElement = document.getElementById('ercInput');
     const buttonElement = document.getElementById('calcButton');
@@ -301,7 +606,6 @@
 
     function generateCode() {
         const ercCode = inputElement.value.trim();
-        
         outputElement.classList.remove('show', 'show-error');
         void outputElement.offsetWidth; 
 
@@ -316,6 +620,42 @@
         outputElement.textContent = result;
         outputElement.classList.add('show');
     }
+
+    /* =========================================
+       モーダル & タブ切り替えロジック
+    ========================================= */
+    const openModalBtn = document.getElementById('openModalBtn');
+    const usageModal = document.getElementById('usageModal');
+    const closeModalIcon = document.getElementById('closeModalIcon');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // モーダルを開閉
+    openModalBtn.addEventListener('click', () => usageModal.classList.add('show'));
+    function closeModal() { usageModal.classList.remove('show'); }
+    closeModalIcon.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    usageModal.addEventListener('click', (e) => {
+        if (e.target === usageModal) closeModal();
+    });
+
+    // タブの切り替え処理
+    const modalTabs = document.querySelectorAll('.modal-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    modalTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // 1. 全てのタブのactive状態を解除
+            modalTabs.forEach(t => t.classList.remove('active'));
+            // 2. クリックされたタブをactiveにする
+            tab.classList.add('active');
+
+            // 3. 全てのコンテンツを非表示にする
+            tabContents.forEach(c => c.classList.remove('active'));
+            // 4. クリックされたタブに対応するコンテンツを表示する
+            const targetId = tab.getAttribute('data-target');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
 </script>
 
 </body>
